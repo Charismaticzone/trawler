@@ -34,8 +34,8 @@ from kafka.consumer import SimpleConsumer
 from kafka.producer import SimpleProducer
 
 
-# KAFKA_HOSTS = 'k01.istresearch.com:9092'
-KAFKA_HOSTS = '192.168.77.27:9092'
+KAFKA_HOSTS = 'k01.istresearch.com:9092'
+# KAFKA_HOSTS = '192.168.77.27:9092'
 KAFKA_INCOMING_TOPIC = 'twitter.incoming_usernames'
 KAFKA_OUTGOING_TWEETS = 'twitter.crawled_tweets'
 KAFKA_OUTGOING_FF = 'twitter.outgoing_ffs'
