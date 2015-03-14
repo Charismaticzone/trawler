@@ -71,12 +71,17 @@ def run_kafka_monitor(kafka_host=KAFKA_HOSTS):
                 if message is None:
                     break
                 try:
-                    u = message.message.value
+                    load = json.loads(message.message.value)
                 except:
                     pass
                 else:
-                    send_kafka_tweets(u)
-                    send_kafka_ff(u)
+                    try:
+                        u = load['screen_name']
+                    except:
+                        pass
+                    else:
+                        send_kafka_tweets(u)
+                        send_kafka_ff(u)
         except OffsetOutOfRangeError:
             consumer.seek(0,0)
         end = time.time()
