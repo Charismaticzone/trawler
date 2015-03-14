@@ -34,11 +34,11 @@ from kafka.consumer import SimpleConsumer
 from kafka.producer import SimpleProducer
 
 
-KAFKA_HOSTS = 'k01.istresearch.com:9092'
-#KAFKA_HOSTS = '192.168.77.27:9092'
+# KAFKA_HOSTS = 'k01.istresearch.com:9092'
+KAFKA_HOSTS = '192.168.77.27:9092'
 KAFKA_INCOMING_TOPIC = 'twitter.incoming_usernames'
 KAFKA_OUTGOING_TWEETS = 'twitter.crawled_tweets'
-KAFKA_OUTGOING_FF = 'twitter.outgoing_usernames'
+KAFKA_OUTGOING_FF = 'twitter.outgoing_ffs'
 KAFKA_GROUP = 'twitter-kafka-monitor'
 
 
@@ -124,20 +124,18 @@ def send_kafka_ff(screen_name, kafka_host=KAFKA_HOSTS):
     ff_finder = FindFriendFollowers(twython, logger)
 
     ff_screen_names = ff_finder.get_ff_screen_names_for_screen_name(screen_name)
-
     # Send the tweets to kafka
     kafka_conn = KafkaClient(kafka_host)
     producer = SimpleProducer(kafka_conn)
     topic = KAFKA_OUTGOING_FF
     kafka_conn.ensure_topic_exists(topic)
     print "Sending all friends + followers for user {0} to topic {1}".format(screen_name, topic)
-    for name in ff_screen_names:
-        try:
-            req = json.dumps(name)
-        except:
-            print 'json dumps failed'
-        else:
-            response = producer.send_messages(topic, req)
+    try:
+        req = json.dumps({"screen_name": screen_name, "friends_followers": ff_screen_names})
+    except:
+        print 'json dumps failed'
+    else:
+        response = producer.send_messages(topic, req)
 
 
 def main():
